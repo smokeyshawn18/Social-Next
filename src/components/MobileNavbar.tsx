@@ -103,7 +103,7 @@ function MobileNavbar() {
                 <Button
                   variant="default"
                   onClick={() => setShowMobileMenu(false)}
-                  className="w-full  text-gray-900 dark:text-white"
+                  className="w-full"
                 >
                   Sign In
                 </Button>
