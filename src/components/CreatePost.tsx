@@ -6,7 +6,7 @@ import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { ImageIcon, Loader2Icon, SendIcon } from "lucide-react";
+import { ImageIcon, Loader2Icon, SendIcon, XIcon } from "lucide-react";
 import { createPost } from "@/actions/post.action";
 import toast from "react-hot-toast";
 
@@ -17,21 +17,36 @@ const CreatePost = () => {
   const [isPosting, setIsPosting] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; // Ensure file exists
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.result) {
+        setImageUrl(reader.result as string); // Type assertion to ensure it's a string
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async () => {
     if (!content.trim() && !imageUrl) return;
-    setIsPosting(true);
 
+    setIsPosting(true);
     try {
       const result = await createPost(content, imageUrl);
-      if (result.success) {
+      if (result?.success) {
+        // reset the form
         setContent("");
         setImageUrl("");
         setShowImageUpload(false);
-        toast.success("Post created sucesssfully");
+
+        toast.success("Post created successfully");
       }
     } catch (error) {
-      console.log("Failed to create post", error);
-      toast.error("failed to create post");
+      console.error("Failed to create post:", error);
+      toast.error("Failed to create post");
     } finally {
       setIsPosting(false);
     }
@@ -54,7 +69,32 @@ const CreatePost = () => {
             />
           </div>
 
+          {/* Image Preview */}
+          {imageUrl && (
+            <div className="relative w-full max-w-xs mx-auto">
+              <img
+                src={imageUrl}
+                alt="Uploaded preview"
+                className="w-full rounded-lg"
+              />
+              <button
+                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+                onClick={() => setImageUrl("")}
+              >
+                <XIcon className="size-4" />
+              </button>
+            </div>
+          )}
+
           {/* Handle Image Uploads */}
+          {showImageUpload && (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={isPosting}
+            />
+          )}
 
           <div className="flex items-center justify-between border-t pt-4">
             <div className="flex space-x-2">
