@@ -82,15 +82,7 @@ function ProfilePageClient({
     try {
       setIsUpdatingFollow(true);
       await toggleFollow(user.id);
-      const newFollowState = !isFollowing;
-      setIsFollowing(newFollowState);
-
-      // Show appropriate toast message
-      if (newFollowState) {
-        toast.success(`${user.username} followed successfully`);
-      } else {
-        toast.success(`${user.username} unfollowed successfully`);
-      }
+      setIsFollowing(!isFollowing);
     } catch (error) {
       toast.error("Failed to update follow status");
     } finally {
