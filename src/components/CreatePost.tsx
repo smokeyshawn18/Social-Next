@@ -1,34 +1,22 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Textarea } from "./ui/textarea";
+import { ImageIcon, Loader2Icon, SendIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { ImageIcon, Loader2Icon, SendIcon, XIcon } from "lucide-react";
 import { createPost } from "@/actions/post.action";
 import toast from "react-hot-toast";
+import ImageUpload from "./ImageUpload";
 
-const CreatePost = () => {
+function CreatePost() {
   const { user } = useUser();
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isPosting, setIsPosting] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; // Ensure file exists
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (reader.result) {
-        setImageUrl(reader.result as string); // Type assertion to ensure it's a string
-      }
-    };
-    reader.readAsDataURL(file);
-  };
 
   const handleSubmit = async () => {
     if (!content.trim() && !imageUrl) return;
@@ -61,39 +49,25 @@ const CreatePost = () => {
               <AvatarImage src={user?.imageUrl || "/avatar.png"} />
             </Avatar>
             <Textarea
-              placeholder="Drop Your Vibe..."
-              className="min-h-[100px] resize-none border-none focus-visible:ring-0 p-0 text-xl font-semibold"
+              placeholder="What's on your mind?"
+              className="min-h-[100px] resize-none border-none focus-visible:ring-0 p-0 text-base"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               disabled={isPosting}
             />
           </div>
 
-          {/* Image Preview */}
-          {imageUrl && (
-            <div className="relative w-full max-w-xs mx-auto">
-              <img
-                src={imageUrl}
-                alt="Uploaded preview"
-                className="w-full rounded-lg"
+          {(showImageUpload || imageUrl) && (
+            <div className="border rounded-lg p-4">
+              <ImageUpload
+                endpoint="postImage"
+                value={imageUrl}
+                onChange={(url) => {
+                  setImageUrl(url);
+                  if (!url) setShowImageUpload(false);
+                }}
               />
-              <button
-                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
-                onClick={() => setImageUrl("")}
-              >
-                <XIcon className="size-4" />
-              </button>
             </div>
-          )}
-
-          {/* Handle Image Uploads */}
-          {showImageUpload && (
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              disabled={isPosting}
-            />
           )}
 
           <div className="flex items-center justify-between border-t pt-4">
@@ -132,6 +106,5 @@ const CreatePost = () => {
       </CardContent>
     </Card>
   );
-};
-
+}
 export default CreatePost;

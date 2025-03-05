@@ -41,7 +41,7 @@ const WhoToFollow = async () => {
                   </p>
                 </div>
               </div>
-              <FollowBtn userId={user.id} />
+              <FollowBtn userId={user.id} username={user.username} />
             </div>
           ))}
         </div>

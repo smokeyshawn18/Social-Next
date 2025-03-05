@@ -129,7 +129,7 @@ const PostCard = ({
                   </div>
                 </div>
                 {/* Check if current user is the post author */}
-                {dbUserId === post.author.id && (
+                {user?.id === post.author.id && (
                   <DeleteAlertDialog
                     isDeleting={isDeleting}
                     onDelete={handleDeletePost}
@@ -141,7 +141,7 @@ const PostCard = ({
               </p>
             </div>
           </div>
-          {/*  Post Image */}
+
           {/* POST IMAGE */}
           {post.image && (
             <div className="rounded-lg overflow-hidden">
@@ -154,12 +154,12 @@ const PostCard = ({
           )}
 
           {/* LIKE & COMMENT BUTTONS */}
-          <div className="flex items-center pt-2 space-x-4">
+          <div className="flex items-center pt-2 space-x-0">
             {user ? (
               <Button
                 variant="ghost"
                 size="sm"
-                className={`text-muted-foreground gap-2 ${
+                className={`text-muted-foreground gap-1 ${
                   hasLiked
                     ? "text-red-500 hover:text-red-600"
                     : "hover:text-red-500"

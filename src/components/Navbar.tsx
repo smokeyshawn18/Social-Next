@@ -6,6 +6,7 @@ import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
 import { currentUser } from "@clerk/nextjs/server";
 import { syncUser } from "@/actions/user.action";
+import Search from "./Search";
 
 const Navbar = async () => {
   const user = await currentUser();
@@ -24,11 +25,10 @@ const Navbar = async () => {
                 height={60}
                 className="rounded-full  shadow-lg transition-transform duration-300 hover:scale-105"
               />
-              <span className="text-2xl font-semibold text-primary font-mono tracking-widest">
-                Vybe
-              </span>
+              <span className="text-2xl font-semibold text-primary font-mono tracking-widest"></span>
             </Link>
           </div>
+          <Search />
 
           <DesktopNavbar />
           <MobileNavbar />
